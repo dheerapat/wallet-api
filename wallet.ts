@@ -1,9 +1,6 @@
-const crypto = require('crypto')
+import { Currency } from "./currency";
 
-export enum Currency {
-    BTC,
-    ETH
-}
+const crypto = require('crypto')
 
 export class Wallet {
     private readonly id: string
@@ -16,6 +13,10 @@ export class Wallet {
         this.amount = _amount;
     }
 
+    private getRate(from: Currency, to: Currency): number {
+        throw new Error("not implemented")
+    }
+    
     public deposit(deposit: number): void {
         this.amount += deposit;
     }
@@ -25,9 +26,14 @@ export class Wallet {
     }
 
     public tranfer(wallet: Wallet, tranferAmount: number): void {
-        if (this.currency == wallet.currency) {
+        if (this.currency === wallet.currency) {
             wallet.amount += tranferAmount
-            this.amount -= tranferAmount
+        } else {
+            let rate = this.getRate(this.currency, wallet.currency)
+            let exchangeAmount = tranferAmount * rate;
+            wallet.amount += exchangeAmount;
         }
+
+        this.amount -= tranferAmount
     }
 }
