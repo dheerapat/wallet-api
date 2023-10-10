@@ -11,8 +11,6 @@ export async function createUser(_email: string, _password: string): Promise<Use
       }
     })
 
-    prisma.$disconnect
-
     return user
   } catch (e) {
     throw (e);
