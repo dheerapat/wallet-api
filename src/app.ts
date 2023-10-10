@@ -7,7 +7,7 @@ import { createWallet } from "./service/createWalletServie"
 import { createUser } from "./service/createUserService"
 import { getAllUser, getUniqueUser } from "./service/getUserService"
 import { decryptHashPass, hashPass } from "./service/passwordHashService"
-import { getAllCurrency } from "./service/getCurrencyService"
+import { getAllCurrency, getUniqueCurrency } from "./service/getCurrencyService"
 import { generateAccessToken, veryifyAccessToken } from "./service/jwtService"
 
 const dotenv = require('dotenv')
@@ -77,8 +77,11 @@ app.post('/login', async (req: Request, res: Response) => {
 
 })
 
-app.post('/create/currency', async (req: Request, res: Response) => {
+app.post('/create/currency', authenticateToken, async (req: Request, res: Response) => {
   try {
+    if (req.body.email != "admin@example.com") {
+      throw new Error("only admin can create new currency")
+    }
     let curObj = new Currency(req.body.key, req.body.value);
     let currency = await createCurrecy(curObj);
     res.json(currency)
@@ -90,6 +93,19 @@ app.post('/create/currency', async (req: Request, res: Response) => {
 app.get('/currency/all', async (req: Request, res: Response) => {
   let dbCurrency = await getAllCurrency()
   res.json(dbCurrency)
+})
+
+app.post('/create/wallet', authenticateToken, async (req: Request, res: Response) => {
+  try {
+    let user = await getUniqueUser(req.body.email)
+    let dbCurrency = await getUniqueCurrency(parseInt(req.body.currency_id))
+    let currency = new Currency(dbCurrency.key, dbCurrency.value)
+    let wallet = new Wallet(currency, req.body.amount)
+    let dbWallet = await createWallet(wallet, user.id)
+    res.json(dbWallet)
+  } catch (e: any) {
+    res.status(500).json({ error: e.message })
+  }
 })
 
 app.listen(port, () => {

@@ -25,5 +25,4 @@ export async function getUniqueUser(_email: string): Promise<User> {
     } finally {
         prisma.$disconnect
     }
-
 }

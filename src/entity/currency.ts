@@ -18,9 +18,9 @@ export class ExchangeRate {
     public readonly rate: number
     public readonly name: string
 
-    constructor(_from: string, _to: string, _rate: number) {
-        this.from = _from;
-        this.to = _to;
+    constructor(_from: Currency, _to: Currency, _rate: number) {
+        this.from = _from.getCurrency();
+        this.to = _to.getCurrency();
         this.rate = _rate;
         this.name = this.from + "->" + this.to
     }

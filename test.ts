@@ -6,7 +6,7 @@ const assert = require('assert')
 // helpers
 let btc = new Currency('BTC', 'Bitcoin')
 let eth = new Currency('ETH', 'Ethereum')
-let btcToEth = new ExchangeRate('BTC', 'ETH', 100)
+let btcToEth = new ExchangeRate(btc, eth, 100)
 let exRate = [btcToEth]
 
 // test case
