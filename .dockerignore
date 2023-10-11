@@ -3,4 +3,3 @@ node_modules/*
 prisma/migrations
 prisma/*.db
 prisma/*.db-journal
-.env

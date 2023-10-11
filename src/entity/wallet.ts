@@ -24,6 +24,10 @@ export class Wallet {
         this.amount += deposit;
     }
 
+    public withdraw(withdraw: number): void {
+        this.amount -= withdraw;
+    }
+
     public getAmount(): number {
         return this.amount;
     }

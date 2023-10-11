@@ -1,5 +1,5 @@
 import express, { Express, Request, Response } from "express"
-import { Currency } from "./entity/currency"
+import { Currency, ExchangeRate } from "./entity/currency"
 import { Wallet } from "./entity/wallet"
 import { User } from "./entity/user"
 import { createCurrecy } from "./service/createCurrencyService"
@@ -9,6 +9,9 @@ import { getAllUser, getUniqueUser } from "./service/getUserService"
 import { decryptHashPass, hashPass } from "./service/passwordHashService"
 import { getAllCurrency, getUniqueCurrency } from "./service/getCurrencyService"
 import { generateAccessToken, veryifyAccessToken } from "./service/jwtService"
+import { createExchangeRate } from "./service/createExchangeRateService"
+import { RequestCreateUser, RequestCreateWallet } from "./model/userViewModel"
+import { getAllExchangeRate } from "./service/getExchangeRateService"
 
 const dotenv = require('dotenv')
 
@@ -42,22 +45,12 @@ app.get('/', (req: Request, res: Response) => {
 
 app.post('/create/user', async (req: Request, res: Response) => {
   try {
-    let user = await createUser(req.body.email, await hashPass(req.body.password, salt))
+    const reqBody: RequestCreateUser = req.body
+    let user = await createUser(reqBody.email, await hashPass(reqBody.password, salt))
     res.json(user)
   } catch (e: any) {
     res.status(500).json({ error: e.message })
   }
-})
-
-app.get('/users/all', async (req: Request, res: Response) => {
-  let dbUsers = await getAllUser()
-  let users: User[] = []
-
-  dbUsers.forEach(u => {
-    users.push({ id: u.id, email: u.email })
-  })
-
-  res.json(users)
 })
 
 app.post('/login', async (req: Request, res: Response) => {
@@ -77,6 +70,17 @@ app.post('/login', async (req: Request, res: Response) => {
 
 })
 
+app.get('/users/all', async (req: Request, res: Response) => {
+  let dbUsers = await getAllUser()
+  let users: User[] = []
+
+  dbUsers.forEach(u => {
+    users.push({ id: u.id, email: u.email })
+  })
+
+  res.json(users)
+})
+
 app.post('/create/currency', authenticateToken, async (req: Request, res: Response) => {
   try {
     if (req.body.email != "admin@example.com") {
@@ -90,17 +94,41 @@ app.post('/create/currency', authenticateToken, async (req: Request, res: Respon
   }
 })
 
+app.post('/create/exchangerate', authenticateToken, async (req: Request, res: Response) => {
+  try {
+    if (req.body.email != "admin@example.com") {
+      throw new Error("only admin can create new currency")
+    }
+    let fromCur = await getUniqueCurrency(parseInt(req.body.from_id))
+    let fromCurrency = new Currency(fromCur.key, fromCur.value)
+    let toCur = await getUniqueCurrency(parseInt(req.body.to_id))
+    let toCurrency = new Currency(toCur.key, toCur.value)
+
+    let exObj = new ExchangeRate(fromCurrency, toCurrency, parseFloat(req.body.rate));
+    let currency = await createExchangeRate(exObj);
+    res.json(currency)
+  } catch (e: any) {
+    res.status(500).json({ error: e.message })
+  }
+})
+
 app.get('/currency/all', async (req: Request, res: Response) => {
   let dbCurrency = await getAllCurrency()
   res.json(dbCurrency)
 })
 
+app.get('/exchangerate/all', async (req: Request, res: Response) => {
+  let dbExchangeRate = await getAllExchangeRate()
+  res.json(dbExchangeRate)
+})
+
 app.post('/create/wallet', authenticateToken, async (req: Request, res: Response) => {
   try {
-    let user = await getUniqueUser(req.body.email)
-    let dbCurrency = await getUniqueCurrency(parseInt(req.body.currency_id))
+    const reqBody: RequestCreateWallet = req.body;
+    let user = await getUniqueUser(reqBody.email)
+    let dbCurrency = await getUniqueCurrency(parseInt(reqBody.currency_id))
     let currency = new Currency(dbCurrency.key, dbCurrency.value)
-    let wallet = new Wallet(currency, req.body.amount)
+    let wallet = new Wallet(currency, reqBody.amount)
     let dbWallet = await createWallet(wallet, user.id)
     res.json(dbWallet)
   } catch (e: any) {
