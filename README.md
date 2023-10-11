@@ -26,3 +26,6 @@ Or just use Dockerfile provided ( tested with podman and no data persistent conf
 podman build -t wallet-api .
 podman run --rm -d -p 3000:3000 wallet-api
 ```
+### API testing with Postman
+
+I provided a postman collection for running an api test with postman, assume that you are running a service on fresh database, you can import a collection into postman and run a collection automatically. All test should pass.

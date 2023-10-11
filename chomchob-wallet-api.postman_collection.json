@@ -1,0 +1,837 @@
+{
+	"info": {
+		"_postman_id": "0c4c643a-4bc2-4dc3-bd3a-742b6462214a",
+		"name": "chomchob-wallet-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "21873963"
+	},
+	"item": [
+		{
+			"name": "health check",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "localhost:3000"
+			},
+			"response": []
+		},
+		{
+			"name": "create admin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "admin@example.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "text"
+						}
+					]
+				},
+				"url": "localhost:3000/create/user"
+			},
+			"response": []
+		},
+		{
+			"name": "admin login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"// Store the access token in an environment variable",
+							"pm.environment.set(\"adminAccessToken\", jsonData.accessToken);",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "admin@example.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "text"
+						}
+					]
+				},
+				"url": "localhost:3000/login"
+			},
+			"response": []
+		},
+		{
+			"name": "admin create currency BTC",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{adminAccessToken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "key",
+							"value": "BTC",
+							"type": "text"
+						},
+						{
+							"key": "value",
+							"value": "Bitcoin",
+							"type": "text"
+						}
+					]
+				},
+				"url": "localhost:3000/create/currency"
+			},
+			"response": []
+		},
+		{
+			"name": "admin create currency ETH",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{adminAccessToken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "key",
+							"value": "ETH",
+							"type": "text"
+						},
+						{
+							"key": "value",
+							"value": "Ethereum",
+							"type": "text"
+						}
+					]
+				},
+				"url": "localhost:3000/create/currency"
+			},
+			"response": []
+		},
+		{
+			"name": "get all currency",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "localhost:3000/currency/all"
+			},
+			"response": []
+		},
+		{
+			"name": "admin create exchange rate BTC->ETH",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{adminAccessToken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "from_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "to_id",
+							"value": "2",
+							"type": "text"
+						},
+						{
+							"key": "rate",
+							"value": "100",
+							"type": "text"
+						}
+					]
+				},
+				"url": "localhost:3000/create/exchangerate"
+			},
+			"response": []
+		},
+		{
+			"name": "get all exchange rate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "localhost:3000/exchangerate/all"
+			},
+			"response": []
+		},
+		{
+			"name": "create user jim",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "jimdane@example.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "jimyjim",
+							"type": "text"
+						}
+					]
+				},
+				"url": "localhost:3000/create/user"
+			},
+			"response": []
+		},
+		{
+			"name": "create user john",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "johndoe@example.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "johnyjohn",
+							"type": "text"
+						}
+					]
+				},
+				"url": "localhost:3000/create/user"
+			},
+			"response": []
+		},
+		{
+			"name": "user jim login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"// Store the access token in an environment variable",
+							"pm.environment.set(\"accessToken\", jsonData.accessToken);",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "jimdane@example.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "jimyjim",
+							"type": "text"
+						}
+					]
+				},
+				"url": "localhost:3000/login"
+			},
+			"response": []
+		},
+		{
+			"name": "user jim create wallet BTC",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{accessToken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "currency_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "amount",
+							"value": "0",
+							"type": "text"
+						}
+					]
+				},
+				"url": "localhost:3000/create/wallet"
+			},
+			"response": []
+		},
+		{
+			"name": "admin get all user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{adminAccessToken}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "localhost:3000/users/all"
+			},
+			"response": []
+		},
+		{
+			"name": "get user jim wallet",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{accessToken}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "localhost:3000/wallet"
+			},
+			"response": []
+		},
+		{
+			"name": "user jim deposit to wallet",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{accessToken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "wallet_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "deposit",
+							"value": "500",
+							"type": "text"
+						}
+					]
+				},
+				"url": "localhost:3000/wallet/deposit"
+			},
+			"response": []
+		},
+		{
+			"name": "admin deposit to user jim wallet",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{adminAccessToken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "wallet_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "deposit",
+							"value": "100",
+							"type": "text"
+						}
+					]
+				},
+				"url": "localhost:3000/wallet/deposit"
+			},
+			"response": []
+		},
+		{
+			"name": "user jim withdraw from wallet",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{accessToken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "wallet_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "withdraw",
+							"value": "25",
+							"type": "text"
+						}
+					]
+				},
+				"url": "localhost:3000/wallet/withdraw"
+			},
+			"response": []
+		},
+		{
+			"name": "admin withdraw wallet",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{adminAccessToken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "wallet_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "withdraw",
+							"value": "25",
+							"type": "text"
+						}
+					]
+				},
+				"url": "localhost:3000/wallet/withdraw"
+			},
+			"response": []
+		},
+		{
+			"name": "user john login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"// Store the access token in an environment variable",
+							"pm.environment.set(\"newAccessToken\", jsonData.accessToken);",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "johndoe@example.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "johnyjohn",
+							"type": "text"
+						}
+					]
+				},
+				"url": "localhost:3000/login"
+			},
+			"response": []
+		},
+		{
+			"name": "user john create wallet ETH",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{newAccessToken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "currency_id",
+							"value": "2",
+							"type": "text"
+						},
+						{
+							"key": "amount",
+							"value": "0",
+							"type": "text"
+						}
+					]
+				},
+				"url": "localhost:3000/create/wallet"
+			},
+			"response": []
+		},
+		{
+			"name": "get user john wallet",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{newAccessToken}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "localhost:3000/wallet"
+			},
+			"response": []
+		},
+		{
+			"name": "user jim transfer BTC to user john ETH",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{accessToken}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "wallet_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "transfer",
+							"value": "25",
+							"type": "text"
+						},
+						{
+							"key": "dest_wallet_id",
+							"value": "2",
+							"type": "text"
+						}
+					]
+				},
+				"url": "localhost:3000/transfer/"
+			},
+			"response": []
+		}
+	]
+}

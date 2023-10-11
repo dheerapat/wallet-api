@@ -38,7 +38,7 @@ export class Wallet {
     }
 
     public tranfer(wallet: Wallet, tranferAmount: number, exchange: Rate[]): void {
-        if (this.currency === wallet.currency) {
+        if (this.currency.getCurrency() === wallet.currency.getCurrency()) {
             wallet.amount += tranferAmount
         } else {
             let rate = this.getRate(this.currency, wallet.currency, exchange)

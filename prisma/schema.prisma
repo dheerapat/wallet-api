@@ -23,7 +23,7 @@ model Wallet {
   currencyId  Int
   amount      Float
   author      User      @relation(fields: [authorId], references: [id])
-  authorId    Int       @unique
+  authorId    Int       
 }
 
 model Currency {

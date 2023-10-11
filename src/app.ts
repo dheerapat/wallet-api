@@ -13,7 +13,6 @@ import { createExchangeRate } from "./service/createExchangeRateService"
 import { RequestCreateUser, Rate } from "./model/viewModel"
 import { getAllExchangeRate } from "./service/getExchangeRateService"
 import { getUserWallets, getWallet } from "./service/getWalletService"
-import { waitForDebugger } from "inspector"
 
 const dotenv = require('dotenv')
 
@@ -72,18 +71,23 @@ app.post('/login', async (req: Request, res: Response) => {
 
 })
 
-app.get('/users/all', async (req: Request, res: Response) => {
-  if (req.body.email != "admin@example.com") {
-    throw new Error("only admin can access all user data")
+app.get('/users/all',authenticateToken, async (req: Request, res: Response) => {
+  try {
+    if (req.body.email != "admin@example.com") {
+      throw new Error("only admin can access all user data")
+    }
+    let dbUsers = await getAllUser()
+    let users: User[] = []
+
+    dbUsers.forEach(u => {
+      users.push({ id: u.id, email: u.email })
+    })
+
+    res.json(users)
+  } catch (e: any) {
+    res.status(500).json({ error: e.message })
   }
-  let dbUsers = await getAllUser()
-  let users: User[] = []
 
-  dbUsers.forEach(u => {
-    users.push({ id: u.id, email: u.email })
-  })
-
-  res.json(users)
 })
 
 app.post('/create/currency', authenticateToken, async (req: Request, res: Response) => {
@@ -208,7 +212,7 @@ app.post('/transfer/', authenticateToken, async (req: Request, res: Response) =>
 
     let walletFrom = new Wallet(userCurrency, userWallet.amount)
     let walletTo = new Wallet(destCurrency, dest_wallet.amount)
-    walletFrom.tranfer(walletTo, req.body.transfer, rates)
+    walletFrom.tranfer(walletTo, parseFloat(req.body.transfer), rates)
 
     let fromWallet = await updateWallet(walletFrom, userWallet.id)
     let toWallet = await updateWallet(walletTo, dest_wallet.id)
