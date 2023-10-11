@@ -3,7 +3,7 @@
 How to run this project on your machine
 
 ```bash
-git clone <this project url> wallet api
+git clone https://github.com/dheerapat/wallet-api.git
 cd wallet-api
 
 # create .env file from .env.example provided
