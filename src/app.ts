@@ -73,6 +73,9 @@ app.post('/login', async (req: Request, res: Response) => {
 })
 
 app.get('/users/all', async (req: Request, res: Response) => {
+  if (req.body.email != "admin@example.com") {
+    throw new Error("only admin can access all user data")
+  }
   let dbUsers = await getAllUser()
   let users: User[] = []
 

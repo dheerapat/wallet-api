@@ -8,6 +8,11 @@ RUN npm install
 
 COPY . .
 
+ENV ENV=dev
+ENV DATABASE_URL=file:./dev.db
+ENV TOKEN_SECRET=top-secret
+ENV PORT=3000
+
 RUN npx prisma migrate dev --name init
 
 EXPOSE 3000
