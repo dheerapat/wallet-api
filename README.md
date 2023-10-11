@@ -1,6 +1,7 @@
 # chomchob-wallet-api
 
-How to run this project on your machine
+### How to run this project on your machine
+This is a step by step guide to clone this project on your machine and running in dev environment, you should have Node version >= 18 installed.
 
 ```bash
 git clone https://github.com/dheerapat/wallet-api.git
