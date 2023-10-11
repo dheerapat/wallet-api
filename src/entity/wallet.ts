@@ -1,3 +1,4 @@
+import { Rate } from "../model/viewModel";
 import { Currency, ExchangeRate } from "./currency";
 
 export class Wallet {
@@ -9,7 +10,7 @@ export class Wallet {
         this.amount = _amount;
     }
 
-    private getRate(from: Currency, to: Currency, exchange: ExchangeRate[]): number {
+    private getRate(from: Currency, to: Currency, exchange: Rate[]): number {
         let name = from.getCurrency() + "->" + to.getCurrency();
         let target = exchange.find(e => e.name === name);
 
@@ -36,7 +37,7 @@ export class Wallet {
         return this.currency.getCurrency()
     }
 
-    public tranfer(wallet: Wallet, tranferAmount: number, exchange: ExchangeRate[]): void {
+    public tranfer(wallet: Wallet, tranferAmount: number, exchange: Rate[]): void {
         if (this.currency === wallet.currency) {
             wallet.amount += tranferAmount
         } else {

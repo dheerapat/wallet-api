@@ -10,7 +10,7 @@ import { decryptHashPass, hashPass } from "./service/passwordHashService"
 import { getAllCurrency, getUniqueCurrency } from "./service/getCurrencyService"
 import { generateAccessToken, veryifyAccessToken } from "./service/jwtService"
 import { createExchangeRate } from "./service/createExchangeRateService"
-import { RequestCreateUser } from "./model/userViewModel"
+import { RequestCreateUser, Rate } from "./model/viewModel"
 import { getAllExchangeRate } from "./service/getExchangeRateService"
 import { getUserWallets, getWallet } from "./service/getWalletService"
 import { waitForDebugger } from "inspector"
@@ -150,7 +150,7 @@ app.get('/wallet', authenticateToken, async (req: Request, res: Response) => {
   }
 })
 
-app.put('/wallet/deposit', authenticateToken, async (req: Request, res: Response) => {
+app.post('/wallet/deposit', authenticateToken, async (req: Request, res: Response) => {
   try {
     let user = await getUniqueUser(req.body.email)
     let userWallet = await getWallet(parseInt(req.body.wallet_id))
@@ -168,7 +168,7 @@ app.put('/wallet/deposit', authenticateToken, async (req: Request, res: Response
   }
 })
 
-app.put('/wallet/withdraw', authenticateToken, async (req: Request, res: Response) => {
+app.post('/wallet/withdraw', authenticateToken, async (req: Request, res: Response) => {
   try {
     let user = await getUniqueUser(req.body.email)
     let userWallet = await getWallet(parseInt(req.body.wallet_id))
@@ -181,6 +181,38 @@ app.put('/wallet/withdraw', authenticateToken, async (req: Request, res: Respons
     wallet.withdraw(parseFloat(req.body.withdraw))
     let success = await updateWallet(wallet, userWallet.id)
     res.json({ msg: success })
+  } catch (e: any) {
+    res.status(500).json({ error: e.message })
+  }
+})
+
+app.post('/transfer/', authenticateToken, async (req: Request, res: Response) => {
+  try {
+    let user = await getUniqueUser(req.body.email)
+    let userWallet = await getWallet(parseInt(req.body.wallet_id))
+    if (userWallet.authorId != user.id) {
+      throw new Error('wallet is not belong to this user')
+    }
+    let dest_wallet = await getWallet(parseInt(req.body.dest_wallet_id))
+
+    let userCur = await getUniqueCurrency(userWallet.currencyId)
+    let destCur = await getUniqueCurrency(dest_wallet.currencyId)
+    let userCurrency = new Currency(userCur.key, userCur.value)
+    let destCurrency = new Currency(destCur.key, destCur.value)
+
+    let dbRates = await getAllExchangeRate()
+    let rates: Rate[] = []
+    dbRates.forEach(e => {
+      rates.push({ name: e.name, rate: e.rate })
+    })
+
+    let walletFrom = new Wallet(userCurrency, userWallet.amount)
+    let walletTo = new Wallet(destCurrency, dest_wallet.amount)
+    walletFrom.tranfer(walletTo, req.body.transfer, rates)
+
+    let fromWallet = await updateWallet(walletFrom, userWallet.id)
+    let toWallet = await updateWallet(walletTo, dest_wallet.id)
+    res.json({ wallet_from: fromWallet, wallet_to: toWallet })
   } catch (e: any) {
     res.status(500).json({ error: e.message })
   }

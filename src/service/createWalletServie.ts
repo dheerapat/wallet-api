@@ -48,7 +48,7 @@ export async function updateWallet(_w: Wallet, _wallet_id: number): Promise<stri
                 amount: _w.getAmount(),
             }
         })
-        return 'success'
+        return 'update wallet success'
     } catch (e) {
         throw (e);
     } finally {

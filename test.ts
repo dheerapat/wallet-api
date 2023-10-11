@@ -1,12 +1,13 @@
 import { Currency, ExchangeRate } from "./src/entity/currency";
 import { Wallet } from "./src/entity/wallet";
+import { Rate } from "./src/model/viewModel";
 
 const assert = require('assert')
 
 // helpers
 let btc = new Currency('BTC', 'Bitcoin')
 let eth = new Currency('ETH', 'Ethereum')
-let btcToEth = new ExchangeRate(btc, eth, 100)
+let btcToEth: Rate = {name: 'BTC->ETH', rate: 100}
 let exRate = [btcToEth]
 
 // test case

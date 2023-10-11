@@ -21,7 +21,7 @@ export async function getUserWallets(_user_id: number): Promise<Wallet[]> {
     }
 }
 
-export async function getWallet(_wallet_id: number): Promise<Wallet> {
+export async function getWallet(_wallet_id: number | undefined): Promise<Wallet> {
     try {
         const wallet = await prisma.wallet.findUnique({
             where: {
