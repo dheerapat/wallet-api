@@ -37,5 +37,22 @@ export async function createWallet(_w: Wallet, _user_id: number): Promise<W> {
     } finally {
         prisma.$disconnect
     }
-    
+
+}
+
+export async function updateWallet(_w: Wallet, _wallet_id: number): Promise<string> {
+    try {
+        const wallet = await prisma.wallet.update({
+            where:{ id: _wallet_id},
+            data: {
+                amount: _w.getAmount(),
+            }
+        })
+        return 'success'
+    } catch (e) {
+        throw (e);
+    } finally {
+        prisma.$disconnect
+    }
+
 }

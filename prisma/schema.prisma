@@ -21,7 +21,7 @@ model Wallet {
   id          Int       @id @default(autoincrement())
   currency    Currency  @relation(fields: [currencyId], references: [id])
   currencyId  Int
-  amount      Decimal
+  amount      Float
   author      User      @relation(fields: [authorId], references: [id])
   authorId    Int       @unique
 }
@@ -36,5 +36,5 @@ model Currency {
 model ExchangeRate {
   id    Int     @id @default(autoincrement())
   name  String  @unique
-  rate  Decimal
+  rate  Float
 }

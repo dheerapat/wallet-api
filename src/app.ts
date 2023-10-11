@@ -3,15 +3,17 @@ import { Currency, ExchangeRate } from "./entity/currency"
 import { Wallet } from "./entity/wallet"
 import { User } from "./entity/user"
 import { createCurrecy } from "./service/createCurrencyService"
-import { createWallet } from "./service/createWalletServie"
+import { createWallet, updateWallet } from "./service/createWalletServie"
 import { createUser } from "./service/createUserService"
 import { getAllUser, getUniqueUser } from "./service/getUserService"
 import { decryptHashPass, hashPass } from "./service/passwordHashService"
 import { getAllCurrency, getUniqueCurrency } from "./service/getCurrencyService"
 import { generateAccessToken, veryifyAccessToken } from "./service/jwtService"
 import { createExchangeRate } from "./service/createExchangeRateService"
-import { RequestCreateUser, RequestCreateWallet } from "./model/userViewModel"
+import { RequestCreateUser } from "./model/userViewModel"
 import { getAllExchangeRate } from "./service/getExchangeRateService"
+import { getUserWallets, getWallet } from "./service/getWalletService"
+import { waitForDebugger } from "inspector"
 
 const dotenv = require('dotenv')
 
@@ -124,13 +126,58 @@ app.get('/exchangerate/all', async (req: Request, res: Response) => {
 
 app.post('/create/wallet', authenticateToken, async (req: Request, res: Response) => {
   try {
-    const reqBody: RequestCreateWallet = req.body;
-    let user = await getUniqueUser(reqBody.email)
-    let dbCurrency = await getUniqueCurrency(parseInt(reqBody.currency_id))
+    let user = await getUniqueUser(req.body.email)
+    let dbCurrency = await getUniqueCurrency(parseInt(req.body.currency_id))
     let currency = new Currency(dbCurrency.key, dbCurrency.value)
-    let wallet = new Wallet(currency, reqBody.amount)
+    let wallet = new Wallet(currency, parseFloat(req.body.amount))
     let dbWallet = await createWallet(wallet, user.id)
     res.json(dbWallet)
+  } catch (e: any) {
+    res.status(500).json({ error: e.message })
+  }
+})
+
+app.get('/wallet', authenticateToken, async (req: Request, res: Response) => {
+  try {
+    let user = await getUniqueUser(req.body.email)
+    let userWallets = await getUserWallets(user.id)
+    res.json(userWallets)
+  } catch (e: any) {
+    res.status(500).json({ error: e.message })
+  }
+})
+
+app.put('/wallet/deposit', authenticateToken, async (req: Request, res: Response) => {
+  try {
+    let user = await getUniqueUser(req.body.email)
+    let userWallet = await getWallet(parseInt(req.body.wallet_id))
+    if (userWallet.authorId != user.id && req.body.email != 'admin@example.com') {
+      throw new Error('wallet is not belong to this user')
+    }
+    let dbCur = await getUniqueCurrency(userWallet.currencyId)
+    let currency = new Currency(dbCur.key, dbCur.value)
+    let wallet = new Wallet(currency, userWallet.amount)
+    wallet.deposit(parseFloat(req.body.deposit))
+    let success = await updateWallet(wallet, userWallet.id)
+    res.json({ msg: success })
+  } catch (e: any) {
+    res.status(500).json({ error: e.message })
+  }
+})
+
+app.put('/wallet/withdraw', authenticateToken, async (req: Request, res: Response) => {
+  try {
+    let user = await getUniqueUser(req.body.email)
+    let userWallet = await getWallet(parseInt(req.body.wallet_id))
+    if (userWallet.authorId != user.id && req.body.email != 'admin@example.com') {
+      throw new Error('wallet is not belong to this user')
+    }
+    let dbCur = await getUniqueCurrency(userWallet.currencyId)
+    let currency = new Currency(dbCur.key, dbCur.value)
+    let wallet = new Wallet(currency, userWallet.amount)
+    wallet.withdraw(parseFloat(req.body.withdraw))
+    let success = await updateWallet(wallet, userWallet.id)
+    res.json({ msg: success })
   } catch (e: any) {
     res.status(500).json({ error: e.message })
   }
