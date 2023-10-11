@@ -22,9 +22,6 @@ npm run dev
 Or just use Dockerfile provided ( tested with podman and no data persistent configuration )
 
 ```bash
-# do not forget to create .env file
-cp .env.example .env
-
 #build docker image with 'podman', 'docker' or 'nerdctl'
 podman build -t wallet-api .
 podman run --rm -d -p 3000:3000 wallet-api
